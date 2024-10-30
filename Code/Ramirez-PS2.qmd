@@ -1,0 +1,101 @@
+---
+title: "Ramirez-PS2"
+format: html
+editor: visual
+---
+
+Setting things up:
+
+```{r}
+rm(list=ls())
+library(here)
+library(tidyverse)
+hallow<-read.csv(here("data","Halloween_data_PS2.csv"))
+```
+
+Examining data:
+
+```{r}
+str(hallow)
+glimpse(hallow)
+```
+
+Assigning data types:
+
+```{r}
+hallow$Costume_type<-as.factor(hallow$Costume_type)
+hallow$sugar_high<-as.factor(hallow$sugar_high)
+```
+
+Fixing Errors:
+
+For Costume type:
+
+```{r}
+levels(hallow$Costume_type)#seeing what categories there actually are
+```
+
+```{r}
+fix1<-which(hallow$Costume_type %in% c("Not scary","notscary"))
+hallow$Costume_type[fix1]<-"not scary"
+fix2<-which(hallow$Costume_type%in%c("scaly","Scary","scary "))
+hallow$Costume_type[fix2]<-"scary"
+hallow$Costume_type<-factor(hallow$Costume_type) #now run above chunk to check it worked
+```
+
+For sugar high:
+
+```{r}
+levels(hallow$sugar_high)
+```
+
+```{r}
+fix3<-which(hallow$sugar_high%in%c("No","NO"))
+hallow$sugar_high[fix3]<-"no"
+fix4<-which(hallow$sugar_high%in%"Yes")
+hallow$sugar_high[fix4]<-"yes"
+hallow$sugar_high<-factor(hallow$sugar_high)
+```
+
+Now for a scatterplot:
+
+```{r}
+ggplot(hallow, aes(age,min_temp_trick_treat_C,colour = Costume_type,shape = Costume_type))+
+  geom_point(size=5)+
+  ylab("Minimum temperature while out (C)")+
+  xlab("Age of trick-or-treater (years)")+
+  theme_bw()
+```
+
+Now for histogram showing the count of the number of kids (10 and up who consumed 100+ g)who each ate certain numbers of pieces of candy:
+
+```{r}
+kids<-hallow|>
+  group_by(costume)|>
+  filter(age>=10 & g_candy_consumed>=100)
+```
+
+```{r}
+ggplot(kids, aes(candy_pieces))+
+  geom_histogram()
+```
+
+Now some summary stats:
+
+```{r}
+hallow|>
+  group_by(sugar_high)|>
+  summarise(mean(age),mean(g_candy_consumed),sd(age), sd(g_candy_consumed))|>
+  View()
+```
+
+Now for a box plot:
+
+```{r}
+ggplot(hallow, aes(Costume_type,g_candy_consumed))+
+  geom_boxplot()+
+  geom_point(colour="orange")+
+  facet_wrap(~sugar_high)+
+  ylab("Amount of candy consumed (g)")+
+  xlab("Costume type")
+```
