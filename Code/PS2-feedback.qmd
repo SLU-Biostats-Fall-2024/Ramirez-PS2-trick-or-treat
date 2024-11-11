@@ -1,0 +1,52 @@
+---
+title: "ps2-feedback"
+format: html
+editor: visual
+---
+
+## PS2 feedback
+
+I'd like to see you work to provide commentary on the output of your code chunks. For instance, what do you learn when you run `str()` and `glimpse()`? What does that code tell you about your data? You should be writing it down.
+
+At line 43, you should also run `levels()` after running `factor()` to see what the new levels of your factor are. Same for line 57.
+
+On line 74, why did you group by costume? That step was not necessary.
+
+In figure 2, you didn't adjust your axis labels.
+
+Lines 85 - 89, you can work to make your code more readable using spacing. Here's what you have:
+
+```{r}
+hallow|>
+  group_by(sugar_high)|>
+  summarise(mean(age),mean(g_candy_consumed),sd(age), sd(g_candy_consumed))|>
+  View()
+```
+
+Here is exactly the same code, but easier to read:
+
+```{r}
+hallow|>
+  group_by(sugar_high)|>
+  summarise(
+    mean(age),
+    mean(g_candy_consumed),
+    sd(age), 
+    sd(g_candy_consumed))|>
+  View()
+```
+Notice that because you did not name new variables in your summarise() statement, the tabular view has weird column names.
+
+You could have done:
+```{r}
+hallow|>
+  group_by(sugar_high)|>
+  summarise(
+    mean_age = mean(age),
+    mean_g_candy = mean(g_candy_consumed),
+    sd_age = sd(age), 
+    sd_g_candy = sd(g_candy_consumed))|>
+  View()
+```
+
+For figure 3, notice that I have different levels for my factors than you do.
